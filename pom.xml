@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <groupId>br.com.fatec</groupId>
     <artifactId>produto-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -30,6 +33,7 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Dependências do Quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-h2</artifactId>
@@ -64,14 +68,28 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-container-image-jib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-kubernetes</artifactId>
+        </dependency>
+
+        <!-- Dependências de Teste -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-		<groupId>io.rest-assured</groupId>
-		<artifactId>rest-assured</artifactId>
-		<scope>test</scope>
-	</dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -82,6 +100,7 @@
 
     <build>
         <plugins>
+            <!-- Plugin Quarkus para Gerar o Artefato e Deploy -->
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
@@ -98,6 +117,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Plugin Maven Compiler -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
@@ -105,6 +126,8 @@
                     <parameters>true</parameters>
                 </configuration>
             </plugin>
+
+            <!-- Plugin Maven Surefire -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
@@ -115,6 +138,8 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
+            <!-- Plugin Maven Failsafe -->
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
@@ -138,16 +163,18 @@
     </build>
 
     <profiles>
+        <!-- Profile Kubernetes -->
         <profile>
-            <id>native</id>
+            <id>kubernetes</id>
             <activation>
                 <property>
-                    <name>native</name>
+                    <name>kubernetes</name>
                 </property>
             </activation>
             <properties>
-                <skipITs>false</skipITs>
-                <quarkus.native.enabled>true</quarkus.native.enabled>
+                <quarkus.kubernetes.deploy>true</quarkus.kubernetes.deploy>
+                <quarkus.kubernetes.service-type>LoadBalancer</quarkus.kubernetes.service-type>
+                <quarkus.kubernetes-client.trust-certs>true</quarkus.kubernetes-client.trust-certs>
             </properties>
         </profile>
     </profiles>

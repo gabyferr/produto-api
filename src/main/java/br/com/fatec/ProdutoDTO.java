@@ -20,6 +20,5 @@ public class ProdutoDTO {
     @NotEmpty(message = "O descrição não pode ser vazio")
     private String descricao;
     @NotNull(message = "O nome não pode ser null")
-    @NotEmpty(message = "O preco não pode ser vazio")
     private Double preco;
 }
